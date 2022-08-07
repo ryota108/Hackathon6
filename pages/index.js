@@ -1,6 +1,7 @@
 // import { Link } from "react-router-dom"
 import Link from "next/link";
-import { useState,useEffect } from "react";
+import { useState,useEffect, } from "react";
+import Form from "../components/Form";
 const defaultEndpoint = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&keyword=モバイル&applicationId=1031547588614100400"
 
 export async function getServerSideProps() {
@@ -16,6 +17,13 @@ export async function getServerSideProps() {
 
 export default function Home({ data }) {
   const [search,setSearch] = useState("");
+
+  // 時給のデータ型 
+  // const info =  {
+  //   payment: 1050,  時給（固定）
+  //   saving: 100000,　貯金
+  //   monday: ~
+  // } 
 
   // const [page, updatePage] = useState({
   //   results_available: results_available,
@@ -49,10 +57,11 @@ export default function Home({ data }) {
   const searchChangeHandle = (event) =>{
     setSearch(event.target.value);
   }
+
   return (
     <>
      <input type="text" onChange={searchChangeHandle} />
-
+        <Form />
          <ul>
           {data.Items.map((item, index) => {
             return (
