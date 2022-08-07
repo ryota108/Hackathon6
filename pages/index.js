@@ -16,48 +16,56 @@ export async function getServerSideProps() {
 
 export default function Home({ data }) {
   const [search,setSearch] = useState("");
+  const [product, updateProduct] = useState(data.Items)
 
-  // const [page, updatePage] = useState({
-  //   results_available: results_available,
-  //   results_start: results_start,
-  // })
+  useEffect(() => {
+    if (search === '') return
 
-  // useEffect(() => {
-  //   if (search === '') return
+    const params = { keyword: search }
+    console.log(params)
+    const query = new URLSearchParams(params)
+    const request = async () => {
+      const res = await fetch(`/api/search?${query}`)
+      const data = await res.json()
+      const nextData = data.Items
 
-  //   const params = { keyword: search }
-  //   const query = new URLSearchParams(params)
+      updateProduct(nextData);
+    }
 
-  //   const request = async () => {
-  //     const res = await fetch(`/api/search?${query}`)
-  //     const data = await res.json()
-  //     const nextData = data.results
+    request()
+  }, [search])
 
-  //     updatePage({
-  //       results_available: nextData.results_available,
-  //       results_start: nextData.results_start,
-  //     })
+  const handlerOnSubmitSearch = (e) => {
+    e.preventDefault()
 
-  //     updateShops(nextData.shop)
-  //   }
+    const { currentTarget = {} } = e
+    const fields = Array.from(currentTarget?.elements)
+    const fieldQuery = fields.find((field) => field.name === 'query')
 
-  //   request()
-  // }, [search])
-
-
-
-  const searchChangeHandle = (event) =>{
-    setSearch(event.target.value);
+    // keywordをセット
+    const value = fieldQuery.value || ''
+    setSearch(value)
   }
+
+
   return (
     <>
-     <input type="text" onChange={searchChangeHandle} />
+        <form onSubmit={handlerOnSubmitSearch} >
+              <input
+                type="search"
+                name="query"
+                placeholder="キーワードを入力して下さい"
+              />
+              <button>
+                Search
+              </button>
+            </form>
+          {/* <h1>{data.count}</h1> */}
 
          <ul>
-          {data.Items.map((item, index) => {
+          {product.map((item, index) => {
             return (
-              <Link href={`products/${item.Item.shopCode}`}key={index}>
-                <a href={item.Item.shopUrl}>
+              <Link href={`products/${item.Item.itemCode}`}key={index}>
                   <a>
                     <div >
                       <div >
@@ -67,18 +75,13 @@ export default function Home({ data }) {
                       </div>
                       <div>
                         <div>
-                          <h3> {item.Item.itemName} </h3></div>
+                          <h3> {item.Item.itemName.substr(0,40)+"..."} </h3></div>
                         <div>
-                          <div>
-                            <span>{item.Item.catchcopy}</span>
-                          </div>
                           <h2> {item.Item.itemPrice}円</h2>
-
                         </div>
                       </div>
                     </div>
                   </a>
-                </a>
               </Link>
             )
           })}
