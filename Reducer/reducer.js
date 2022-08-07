@@ -27,6 +27,11 @@ const reducer = (state, action) => {
         case "SUNDAY":
             return { ...state, sunday: action.payload }
             break;
+        case "ISSATISFICATION":
+            return {...state, isSatisfication: !state.isSatisfication}
+            break;
+        case "HOURS":
+            return {...state, hours: action.payload }
         case "ALL":
             return state
             break;
