@@ -1,10 +1,10 @@
 // import { Link } from "react-router-dom"
 import Link from "next/link";
 import { useState,useEffect } from "react";
-const defaultEndpoint = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&keyword=モバイル&applicationId=1031547588614100400"
+const defaultEndpoint = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&applicationId=1031547588614100400"
 
 export async function getServerSideProps() {
-  const res = await fetch(defaultEndpoint)
+  const res = await fetch(defaultEndpoint+"&keyword=モバイル")
   const data = await res.json()
 
   return {
@@ -22,10 +22,9 @@ export default function Home({ data }) {
     if (search === '') return
 
     const params = { keyword: search }
-    console.log(params)
     const query = new URLSearchParams(params)
     const request = async () => {
-      const res = await fetch(`/api/search?${query}`)
+      const res = await fetch(`${defaultEndpoint}&keyword=${search}`)
       const data = await res.json()
       const nextData = data.Items
 
@@ -65,7 +64,8 @@ export default function Home({ data }) {
          <ul>
           {product.map((item, index) => {
             return (
-              <Link href={`products/${item.Item.itemCode}`}key={index}>
+              <li key={index}>
+              <Link href={`products/${item.Item.itemCode}`}>
                   <a>
                     <div >
                       <div >
@@ -83,6 +83,7 @@ export default function Home({ data }) {
                     </div>
                   </a>
               </Link>
+              </li>
             )
           })}
         </ul> 
