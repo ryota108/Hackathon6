@@ -73,7 +73,7 @@ export default function Home({ data }) {
               <button>
                 Search
               </button>
-            </form>
+        </form>
           {/* <h1>{data.count}</h1> */}
          <Form />
          <ul>
